@@ -6,6 +6,12 @@ const dotenv = require('dotenv');
 // Load env vars
 dotenv.config();
 
+// Check for required environment variables
+if (!process.env.JWT_SECRET) {
+    console.error('FATAL ERROR: JWT_SECRET is not defined in the environment variables.');
+    throw new Error('JWT_SECRET is required');
+}
+
 // Import routes
 const authRoutes = require('../routes/authRoutes');
 const templeRoutes = require('../routes/templeRoutes');
