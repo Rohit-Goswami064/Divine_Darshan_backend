@@ -53,6 +53,23 @@ app.use(express.json());
 // Enable CORS
 app.use(cors());
 
+// Root route for convenience
+app.get('/', (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: 'Divine Darshan API is running. Available endpoints: /api/health, /api/auth, /api/temples, etc.'
+    });
+});
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: 'Divine Darshan API is running',
+        timestamp: new Date().toISOString()
+    });
+});
+
 // Mount routers
 app.use('/api/auth', authRoutes);
 app.use('/api/temples', templeRoutes);
@@ -62,12 +79,21 @@ app.use('/api/services', serviceRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-    res.status(200).json({
-        success: true,
-        message: 'Divine Darshan API is running',
-        timestamp: new Date().toISOString()
+// Catch-all route for debugging
+app.get('*', (req, res) => {
+    res.status(404).json({
+        success: false,
+        message: `Route ${req.originalUrl} not found`,
+        availableRoutes: [
+            'GET /',
+            'GET /api/health',
+            'POST /api/auth/register',
+            'POST /api/auth/login',
+            'GET /api/auth/me',
+            'GET /api/temples',
+            'GET /api/services',
+            'GET /api/content/testimonials'
+        ]
     });
 });
 
